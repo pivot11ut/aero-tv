@@ -1,0 +1,21 @@
+{
+  "name": "aero-tv",
+  "version": "1.0.0",
+  "description": "Clean, ad-free replacement smart TV launcher and dashboard for Samsung Smart TVs (Tizen OS)",
+  "main": "index.html",
+  "scripts": {
+    "start": "npx -y serve -p 3000 .",
+    "serve": "npx -y serve -p 3000 .",
+    "build": "./scripts/build-tizen.sh"
+  },
+  "keywords": [
+    "samsung-tv",
+    "tizen",
+    "smart-tv",
+    "launcher",
+    "adblock",
+    "tv-ui"
+  ],
+  "author": "Antigravity Pair Programmer",
+  "license": "MIT"
+}

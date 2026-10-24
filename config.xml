@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<widget xmlns="http://www.w3.org/ns/widgets" 
+        xmlns:tizen="http://tizen.org/ns/widgets" 
+        id="http://antigravity.tv/AeroTV" 
+        version="1.0.0" 
+        viewmodes="fullscreen">
+    
+    <tizen:application id="AeroTV0001.AeroTV" 
+                       exec="index.html" 
+                       screen-orientation="landscape" 
+                       context-menu="enable" />
+    
+    <tizen:setting screen-orientation="landscape" 
+                   background-support="disable" 
+                   encryption="disable" 
+                   install-location="auto" />
+    
+    <name>Aero TV</name>
+    <description>Clean, ad-free replacement smart TV launcher and dashboard for Samsung Smart TVs (Tizen OS).</description>
+    <author href="https://github.com/timgunn/new-tv-ui" email="support@aerotv.local">Aero TV Engineering</author>
+    
+    <icon src="icon.png" />
+    
+    <!-- Tizen Permissions -->
+    <tizen:privilege name="http://tizen.org/privilege/tv.inputdevice" />
+    <tizen:privilege name="http://tizen.org/privilege/application.launch" />
+    <tizen:privilege name="http://tizen.org/privilege/internet" />
+    
+    <!-- TV Profile Definition -->
+    <tizen:profile name="tv" />
+    
+    <tizen:content-security-policy>
+        default-src * 'self' 'unsafe-inline' 'unsafe-eval' data: blob:;
+    </tizen:content-security-policy>
+</widget>

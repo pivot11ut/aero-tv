@@ -1,0 +1,848 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Aero TV — Clean Ad-Free TV Launcher</title>
+    <link rel="icon" type="image/png" href="icon.png">
+    
+    <!-- Google Fonts for 10-foot TV readability -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="theme-oled" data-wallpaper="oled">
+
+    <!-- Ambient / Background Wallpapers -->
+    <div id="wallpaper-backdrop" class="wallpaper-container">
+        <div class="wallpaper-layer active" id="wall-oled" style="background-image: url('assets/wallpapers/oled_aurora.jpg');"></div>
+        <div class="wallpaper-layer" id="wall-nordic" style="background-image: url('assets/wallpapers/nordic_lake.jpg');"></div>
+        <div class="wallpaper-layer" id="wall-mesh"></div>
+        <div class="wallpaper-overlay"></div>
+    </div>
+
+    <!-- Main TV UI App Shell -->
+    <div id="tv-app" class="tv-viewport">
+
+        <!-- Top Status & Navigation Bar -->
+        <header class="tv-header" role="banner">
+            <div class="header-left">
+                <div class="brand-badge">
+                    <img src="assets/icons/logo.png" alt="Aero TV Logo" class="brand-logo">
+                    <div class="brand-text">
+                        <span class="brand-name">AERO<span class="brand-highlight">TV</span></span>
+                        <span class="brand-sub">Ad-Free Smart Hub</span>
+                    </div>
+                </div>
+
+                <div class="ad-shield-pill" title="Samsung TV Ads Blocked">
+                    <span class="shield-dot"></span>
+                    <span class="shield-text">Ad-Free Shield: <strong>ACTIVE</strong></span>
+                </div>
+            </div>
+
+            <nav class="category-tabs" role="tablist" aria-label="Main Sections" id="main-nav-bar">
+                <button class="nav-tab active" role="tab" aria-selected="true" data-tab="dashboard" tabindex="0">
+                    <svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+                    <span>Home</span>
+                </button>
+                <button class="nav-tab" role="tab" aria-selected="false" data-tab="apps" tabindex="-1">
+                    <svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="7" height="7" x="3" y="3" rx="1"/><rect width="7" height="7" x="14" y="3" rx="1"/><rect width="7" height="7" x="14" y="14" rx="1"/><rect width="7" height="7" x="3" y="14" rx="1"/></svg>
+                    <span>Apps</span>
+                </button>
+                <button class="nav-tab" role="tab" aria-selected="false" data-tab="inputs" tabindex="-1">
+                    <svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="20" height="15" x="2" y="3" rx="2"/><polyline points="8 21 12 17 16 21"/></svg>
+                    <span>Inputs</span>
+                </button>
+                <button class="nav-tab" role="tab" aria-selected="false" data-tab="media" tabindex="-1">
+                    <svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                    <span>Media</span>
+                </button>
+                <button class="nav-tab" role="tab" aria-selected="false" data-tab="guide" tabindex="-1">
+                    <svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
+                    <span>TV Setup Guide</span>
+                </button>
+            </nav>
+
+            <div class="header-right">
+                <div class="weather-widget" id="weather-widget">
+                    <span class="weather-icon" id="weather-icon">☀️</span>
+                    <div class="weather-info">
+                        <span class="weather-temp" id="weather-temp">72°F</span>
+                        <span class="weather-cond" id="weather-condition">Sunny</span>
+                    </div>
+                </div>
+
+                <div class="clock-widget">
+                    <div class="clock-time" id="clock-time">12:00<span class="clock-seconds">:00</span></div>
+                    <div class="clock-date" id="clock-date">Friday, Oct 24</div>
+                </div>
+
+                <div class="quick-actions">
+                    <button class="icon-btn focusable" id="btn-lock-tv" title="Lock TV / Security PIN" tabindex="-1">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                    </button>
+                    <button class="icon-btn focusable" id="btn-ambient" title="Ambient Screensaver Mode (Yellow Button)" tabindex="-1">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>
+                    </button>
+                    <button class="icon-btn focusable" id="btn-settings" title="Settings & Customization" tabindex="-1">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content Scrollable Area -->
+        <main class="tv-main-content" id="main-content" tabindex="-1">
+
+            <!-- SECTION 1: Inputs / HDMI Quick Bar -->
+            <section class="tv-row inputs-row" id="section-inputs">
+                <div class="row-header">
+                    <div class="row-title-wrap">
+                        <span class="row-badge">PORTS</span>
+                        <h2 class="row-title">Connected Sources</h2>
+                    </div>
+                    <span class="row-hint">Direct Hardware Switching • Press <kbd>Red</kbd> to jump</span>
+                </div>
+                <div class="card-track horizontal-track" id="inputs-track">
+                    <button class="card input-card focusable" data-input-id="hdmi1" tabindex="-1">
+                        <div class="input-indicator active"></div>
+                        <div class="input-icon-box">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m18 15-6-6-6 6"/><rect width="20" height="14" x="2" y="3" rx="2"/></svg>
+                        </div>
+                        <div class="input-details">
+                            <span class="input-tag">HDMI 1</span>
+                            <span class="input-name">PlayStation 5</span>
+                            <span class="input-signal">4K @ 120Hz HDR • VRR</span>
+                        </div>
+                    </button>
+
+                    <button class="card input-card focusable" data-input-id="hdmi2" tabindex="-1">
+                        <div class="input-indicator standby"></div>
+                        <div class="input-icon-box">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="18" height="12" x="3" y="6" rx="2"/><circle cx="12" cy="12" r="2"/></svg>
+                        </div>
+                        <div class="input-details">
+                            <span class="input-tag">HDMI 2</span>
+                            <span class="input-name">Apple TV 4K / Shield</span>
+                            <span class="input-signal">Dolby Vision / Atmos</span>
+                        </div>
+                    </button>
+
+                    <button class="card input-card focusable" data-input-id="hdmi3" tabindex="-1">
+                        <div class="input-indicator standby"></div>
+                        <div class="input-icon-box">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                        </div>
+                        <div class="input-details">
+                            <span class="input-tag">HDMI 3</span>
+                            <span class="input-name">Nintendo Switch</span>
+                            <span class="input-signal">1080p 60Hz</span>
+                        </div>
+                    </button>
+
+                    <button class="card input-card focusable" data-input-id="hdmi4" tabindex="-1">
+                        <div class="input-indicator earc"></div>
+                        <div class="input-icon-box">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" x2="12" y1="19" y2="22"/></svg>
+                        </div>
+                        <div class="input-details">
+                            <span class="input-tag">HDMI 4 (eARC)</span>
+                            <span class="input-name">Soundbar / AV Receiver</span>
+                            <span class="input-signal">Lossless Audio Return</span>
+                        </div>
+                    </button>
+
+                    <button class="card input-card customize-input focusable" id="btn-edit-inputs" tabindex="-1">
+                        <div class="input-icon-box plus-box">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                        </div>
+                        <div class="input-details">
+                            <span class="input-tag">EDIT</span>
+                            <span class="input-name">Rename Inputs</span>
+                            <span class="input-signal">Configure port labels</span>
+                        </div>
+                    </button>
+                </div>
+            </section>
+
+            <!-- SECTION 2: Favorite Apps (Clean & Zero Ads) -->
+            <section class="tv-row apps-row" id="section-apps">
+                <div class="row-header">
+                    <div class="row-title-wrap">
+                        <span class="row-badge">LAUNCHER</span>
+                        <h2 class="row-title">Favorite Applications</h2>
+                    </div>
+                    <div class="row-header-actions">
+                        <span class="row-hint">Direct App Links • No Promoted Junk</span>
+                        <button class="btn-manage-apps focusable" id="btn-open-manage-apps" tabindex="-1" title="Manage Apps">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="btn-icon">
+                                <circle cx="12" cy="12" r="3"></circle>
+                                <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+                            </svg>
+                            <span>Manage Apps</span>
+                        </button>
+                    </div>
+                </div>
+                <div class="card-track horizontal-track" id="apps-track">
+                    <!-- App 1: YouTube / Ad-Free SmartTube -->
+                    <button class="card app-card focusable" data-app-name="YouTube" data-app-url="https://www.youtube.com/tv" data-app-type="streaming" tabindex="-1">
+                        <div class="app-icon-tile yt-gradient">
+                            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
+                        </div>
+                        <span class="app-title">YouTube</span>
+                        <span class="app-badge-sub">Ad-Free SmartTube</span>
+                    </button>
+
+                    <!-- App 2: Netflix -->
+                    <button class="card app-card focusable" data-app-name="Netflix" data-app-url="https://www.netflix.com" data-app-type="streaming" tabindex="-1">
+                        <div class="app-icon-tile nflx-gradient">
+                            <span class="brand-letter">N</span>
+                        </div>
+                        <span class="app-title">Netflix</span>
+                        <span class="app-badge-sub">Movies & Series</span>
+                    </button>
+
+                    <!-- App 3: Plex Media Server -->
+                    <button class="card app-card focusable" data-app-name="Plex" data-app-url="https://app.plex.tv/desktop" data-app-type="local-media" tabindex="-1">
+                        <div class="app-icon-tile plex-gradient">
+                            <svg viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 2 22 22 22 12 2"/></svg>
+                        </div>
+                        <span class="app-title">Plex Server</span>
+                        <span class="app-badge-sub">Personal Library</span>
+                    </button>
+
+                    <!-- App 4: Jellyfin / Emby -->
+                    <button class="card app-card focusable" data-app-name="Jellyfin" data-app-url="http://localhost:8096" data-app-type="local-media" tabindex="-1">
+                        <div class="app-icon-tile jelly-gradient">
+                            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.2C6.59 2.2 2.2 6.59 2.2 12c0 3.79 2.16 7.08 5.32 8.68-.07-.36-.12-.73-.12-1.12 0-3.52 2.86-6.38 6.38-6.38 1.15 0 2.23.31 3.16.85.66-1.2 1.04-2.58 1.04-4.03 0-4.41-3.59-8-8-8z"/></svg>
+                        </div>
+                        <span class="app-title">Jellyfin</span>
+                        <span class="app-badge-sub">Self-Hosted</span>
+                    </button>
+
+                    <!-- App 5: Prime Video -->
+                    <button class="card app-card focusable" data-app-name="Prime Video" data-app-url="https://www.amazon.com/gp/video/storefront" data-app-type="streaming" tabindex="-1">
+                        <div class="app-icon-tile prime-gradient">
+                            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M22.5 16.5c-3.5 2-8 3-12 1.5-2.5-1-4.5-2.5-6-4.5.3-.2.6-.4.9-.5 1.5 2 3.5 3.3 6 4 3.5 1 7.5.5 10.5-1.5.2.3.4.4.6.5zm.5-2.5c-.2-.5-1-.8-2.2-.4-.8.3-1.6.8-2.3 1.3-.2-.3-.5-.5-.8-.7.8-.6 1.7-1.1 2.6-1.5 1.7-.6 3-.1 3.3.8.3 1-.3 2.1-1.3 3.1-.3-.2-.5-.4-.7-.6.7-.8 1-1.5.7-2z"/></svg>
+                        </div>
+                        <span class="app-title">Prime Video</span>
+                        <span class="app-badge-sub">Originals</span>
+                    </button>
+
+                    <!-- App 6: Disney+ -->
+                    <button class="card app-card focusable" data-app-name="Disney+" data-app-url="https://www.disneyplus.com" data-app-type="streaming" tabindex="-1">
+                        <div class="app-icon-tile disney-gradient">
+                            <span class="brand-letter">D+</span>
+                        </div>
+                        <span class="app-title">Disney+</span>
+                        <span class="app-badge-sub">Marvel & Star Wars</span>
+                    </button>
+
+                    <!-- App 7: Spotify / Apple Music -->
+                    <button class="card app-card focusable" data-app-name="Spotify" data-app-url="https://open.spotify.com" data-app-type="music" tabindex="-1">
+                        <div class="app-icon-tile spotify-gradient">
+                            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.78.241 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.181-1.38-.721-.18-.601.18-1.2.72-1.381 4.26-1.26 11.28-1.02 15.721 1.621.539.3.719 1.02.419 1.56-.299.421-1.02.599-1.559.3z"/></svg>
+                        </div>
+                        <span class="app-title">Spotify</span>
+                        <span class="app-badge-sub">Hi-Fi Music</span>
+                    </button>
+
+                    <!-- App 8: Full Web Browser -->
+                    <button class="card app-card focusable" data-app-name="Web Browser" data-app-url="browser" data-app-type="tool" tabindex="-1">
+                        <div class="app-icon-tile browser-gradient">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+                        </div>
+                        <span class="app-title">Web Browser</span>
+                        <span class="app-badge-sub">Full Screen</span>
+                    </button>
+
+                    <!-- App 9: Add App -->
+                    <button class="card app-card add-app-card focusable" id="btn-add-app" tabindex="-1">
+                        <div class="app-icon-tile plus-gradient">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                        </div>
+                        <span class="app-title">Add Custom</span>
+                        <span class="app-badge-sub">URL or Service</span>
+                    </button>
+                </div>
+            </section>
+
+            <!-- SECTION 3: Continue Watching / Media Hub -->
+            <section class="tv-row media-row" id="section-media">
+                <div class="row-header">
+                    <div class="row-title-wrap">
+                        <span class="row-badge">CONTINUE</span>
+                        <h2 class="row-title">Recent & Spotlight Media</h2>
+                    </div>
+                    <span class="row-hint">Local Servers & Queue</span>
+                </div>
+                <div class="card-track horizontal-track" id="media-track">
+                    <!-- Media Card 1: Sci-Fi -->
+                    <div class="card media-card focusable" data-media-title="Interstellar: Event Horizon" tabindex="-1">
+                        <div class="media-art-wrap">
+                            <img src="assets/media/scifi.jpg" alt="Interstellar Event Horizon" class="media-art">
+                            <div class="media-badge-tech">4K HDR • DOLBY ATMOS</div>
+                            <div class="media-play-overlay">
+                                <svg viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                            </div>
+                            <div class="media-progress-bar">
+                                <div class="progress-fill" style="width: 68%;"></div>
+                            </div>
+                        </div>
+                        <div class="media-info">
+                            <h3 class="media-title">Interstellar: Event Horizon</h3>
+                            <p class="media-meta">S1 : E8 • "Singularity" • 42m remaining</p>
+                            <span class="media-source-pill">Plex Server (Living Room)</span>
+                        </div>
+                    </div>
+
+                    <!-- Media Card 2: Cyberpunk -->
+                    <div class="card media-card focusable" data-media-title="Cyberpunk: Neo Tokyo 2099" tabindex="-1">
+                        <div class="media-art-wrap">
+                            <img src="assets/media/cyberpunk.jpg" alt="Cyberpunk Neo Tokyo" class="media-art">
+                            <div class="media-badge-tech">4K 60FPS • OLED MASTER</div>
+                            <div class="media-play-overlay">
+                                <svg viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                            </div>
+                            <div class="media-progress-bar">
+                                <div class="progress-fill" style="width: 24%;"></div>
+                            </div>
+                        </div>
+                        <div class="media-info">
+                            <h3 class="media-title">Cyberpunk: Neo Tokyo 2099</h3>
+                            <p class="media-meta">Movie • 1h 48m left</p>
+                            <span class="media-source-pill">Jellyfin Media Library</span>
+                        </div>
+                    </div>
+
+                    <!-- Media Card 3: Connect Server -->
+                    <div class="card media-card add-server-card focusable" id="btn-connect-server" tabindex="-1">
+                        <div class="server-connect-inner">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="20" height="8" x="2" y="2" rx="2" ry="2"/><rect width="20" height="8" x="2" y="14" rx="2" ry="2"/><line x1="6" x2="6.01" y1="6" y2="6"/><line x1="6" x2="6.01" y1="18" y2="18"/></svg>
+                            <h3>Connect Media Server</h3>
+                            <p>Stream directly from Jellyfin, Plex, Emby, or NAS</p>
+                            <span class="btn-pill">Add Host IP</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SECTION 4: Quick Samsung Control & System Tools -->
+            <section class="tv-row tools-row" id="section-tools">
+                <div class="row-header">
+                    <div class="row-title-wrap">
+                        <span class="row-badge">TOOLS</span>
+                        <h2 class="row-title">TV Optimizations & Ad-Blocking</h2>
+                    </div>
+                    <span class="row-hint">Network & Firmware Settings</span>
+                </div>
+                <div class="card-track horizontal-track" id="tools-track">
+                    <button class="card tool-card focusable" id="tool-samsung-guide" tabindex="-1">
+                        <div class="tool-icon shield-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                        </div>
+                        <div class="tool-text">
+                            <h3>Samsung Ad Blocker</h3>
+                            <p>DNS Blocklist to eradicate Smart Hub ads</p>
+                        </div>
+                    </button>
+
+                    <button class="card tool-card focusable" id="tool-autorun-guide" tabindex="-1">
+                        <div class="tool-icon power-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18.36 6.64a9 9 0 1 1-12.73 0"/><line x1="12" y1="2" x2="12" y2="12"/></svg>
+                        </div>
+                        <div class="tool-text">
+                            <h3>Auto-Boot Settings</h3>
+                            <p>Make TV boot straight into this UI on power-on</p>
+                        </div>
+                    </button>
+
+                    <button class="card tool-card focusable" id="tool-tizen-sideload" tabindex="-1">
+                        <div class="tool-icon package-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>
+                        </div>
+                        <div class="tool-text">
+                            <h3>Tizen Sideload Package</h3>
+                            <p>Download ready-to-flash .wgt & Developer Mode guide</p>
+                        </div>
+                    </button>
+
+                    <button class="card tool-card focusable" id="tool-sleep-timer" tabindex="-1">
+                        <div class="tool-icon timer-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                        </div>
+                        <div class="tool-text">
+                            <h3>Sleep Timer</h3>
+                            <p id="sleep-timer-status">Off (Click to set 30m / 60m / 90m)</p>
+                        </div>
+                    </button>
+                </div>
+            </section>
+        </main>
+
+        <!-- TV Remote D-Pad Navigation Help Footer -->
+        <footer class="tv-footer" role="contentinfo">
+            <div class="remote-hints">
+                <span class="hint-item"><kbd>◀ ▲ ▼ ▶</kbd> Navigate</span>
+                <span class="hint-item"><kbd>ENTER</kbd> Open</span>
+                <span class="hint-item"><kbd>RETURN / ESC</kbd> Back</span>
+                <span class="hint-color-item"><span class="color-dot red"></span> Inputs</span>
+                <span class="hint-color-item"><span class="color-dot green"></span> Apps</span>
+                <span class="hint-color-item"><span class="color-dot yellow"></span> Screensaver</span>
+                <span class="hint-color-item"><span class="color-dot blue"></span> Ad-Block Guide</span>
+            </div>
+            <div class="footer-meta">
+                <span>Aero TV v1.0.0</span>
+                <span class="status-badge">Tizen 4.0 - 8.0+ Ready</span>
+            </div>
+        </footer>
+    </div>
+
+    <!-- AMBIENT SCREENSAVER OVERLAY -->
+    <div id="ambient-overlay" class="ambient-screen" aria-hidden="true">
+        <div class="ambient-content">
+            <div class="ambient-clock" id="ambient-clock">12:00</div>
+            <div class="ambient-date" id="ambient-date">Friday, October 24</div>
+            <div class="ambient-weather" id="ambient-weather">72°F • Clear Night Skies</div>
+            <div class="ambient-quote">"Simplicity is the ultimate sophistication."</div>
+            <div class="ambient-dismiss-hint">Press any button on TV remote to wake</div>
+        </div>
+    </div>
+
+    <!-- MODAL 1: SAMSUNG TV INSTALL & AD-BLOCK GUIDE -->
+    <div id="guide-modal" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="guide-title" aria-hidden="true">
+        <div class="modal-card">
+            <div class="modal-header">
+                <div class="modal-title-wrap">
+                    <span class="modal-badge">SAMSUNG TV INSTALLATION GUIDE</span>
+                    <h2 id="guide-title">How to Install & Replace Samsung Smart Hub UI</h2>
+                </div>
+                <button class="modal-close focusable" id="btn-close-guide" aria-label="Close" tabindex="-1">✕</button>
+            </div>
+
+            <div class="modal-tabs" role="tablist">
+                <button class="modal-tab active focusable" data-guide-tab="method1" tabindex="-1">Method 1: 2-Min Browser (Instant)</button>
+                <button class="modal-tab focusable" data-guide-tab="method2" tabindex="-1">Method 2: Sideload Native App (.wgt)</button>
+                <button class="modal-tab focusable" data-guide-tab="method3" tabindex="-1">Method 3: Block Samsung TV Ads</button>
+                <button class="modal-tab focusable" data-guide-tab="method4" tabindex="-1">Method 4: Auto-Boot on Power-On</button>
+            </div>
+
+            <div class="modal-body">
+                <!-- Guide Tab 1: Instant Browser -->
+                <div class="guide-panel active" id="guide-method1">
+                    <div class="guide-step">
+                        <span class="step-num">1</span>
+                        <div class="step-text">
+                            <h3>Host Locally or Access This Dashboard</h3>
+                            <p>You can run this lightweight web app on your home Wi-Fi network (on a Mac, PC, Raspberry Pi, or NAS) with a single command:</p>
+                            <code>npm run serve &nbsp;&nbsp;# or: python3 -m http.server 8080</code>
+                            <p>Alternatively, host it for free on <strong>GitHub Pages</strong>, <strong>Vercel</strong>, or <strong>Cloudflare Pages</strong>.</p>
+                        </div>
+                    </div>
+                    <div class="guide-step">
+                        <span class="step-num">2</span>
+                        <div class="step-text">
+                            <h3>Open on Samsung TV Web Browser</h3>
+                            <p>On your Samsung TV remote, open the built-in <strong>"Internet"</strong> app (Web Browser). Type your local IP or hosted URL (e.g. <code>http://192.168.1.50:8080</code>).</p>
+                        </div>
+                    </div>
+                    <div class="guide-step">
+                        <span class="step-num">3</span>
+                        <div class="step-text">
+                            <h3>Add Bookmark & Enable Fullscreen Mode</h3>
+                            <p>Press the <strong>star icon (⭐)</strong> in the top-right of Samsung Internet to bookmark it, and click <strong>Fullscreen</strong>. The Samsung TV browser remembers fullscreen state!</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Guide Tab 2: Sideload Native App -->
+                <div class="guide-panel" id="guide-method2">
+                    <div class="guide-step">
+                        <span class="step-num">1</span>
+                        <div class="step-text">
+                            <h3>Enable Developer Mode on Your Samsung TV</h3>
+                            <p>On your Samsung TV remote, open <strong>Apps</strong>. On the remote keypad, press <strong>1, 2, 3, 4, 5</strong> in sequence. A Developer Mode popup will appear. Switch it to <strong>ON</strong>, enter your computer's local IP address, and restart your TV (hold remote Power button for 5 seconds until the TV logo appears).</p>
+                        </div>
+                    </div>
+                    <div class="guide-step">
+                        <span class="step-num">2</span>
+                        <div class="step-text">
+                            <h3>Build the Tizen .wgt Package</h3>
+                            <p>In this project directory, run our automated build script:</p>
+                            <code>./scripts/build-tizen.sh</code>
+                            <p>This creates <code>dist/AeroTV.wgt</code> ready for installation.</p>
+                        </div>
+                    </div>
+                    <div class="guide-step">
+                        <span class="step-num">3</span>
+                        <div class="step-text">
+                            <h3>Install via Samsung Debug Bridge (SDB) or Tizen Studio</h3>
+                            <p>Connect to your TV from your computer terminal and install:</p>
+                            <code>sdb connect [TV-IP-ADDRESS]<br>sdb install dist/AeroTV.wgt</code>
+                            <p>Aero TV will now appear in your TV's Apps row as a native Tizen app!</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Guide Tab 3: Kill Samsung TV Ads via DNS -->
+                <div class="guide-panel" id="guide-method3">
+                    <div class="guide-step">
+                        <span class="step-num">1</span>
+                        <div class="step-text">
+                            <h3>Why Samsung TVs Show Ads</h3>
+                            <p>Samsung Smart Hub downloads ad banners and video recommendations from dedicated Samsung ad telemetry servers. You can block them completely without rooting the TV!</p>
+                        </div>
+                    </div>
+                    <div class="guide-step">
+                        <span class="step-num">2</span>
+                        <div class="step-text">
+                            <h3>Domains to Block (in Pi-hole, AdGuard Home, or Router DNS)</h3>
+                            <p>Add these exact domains to your blacklist:</p>
+                            <div class="code-block-wrap">
+                                <code>
+samsungads.com<br>
+config.samsungcloudcdn.com<br>
+gpm.samsungqbe.com<br>
+log-config.samsungcloudcdn.com<br>
+smetrics.samsung.com<br>
+noticecdn.samsungcloudcdn.com<br>
+oempprod.samsungcloudcdn.com
+                                </code>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="guide-step">
+                        <span class="step-num">3</span>
+                        <div class="step-text">
+                            <h3>Disable "Samsung TV Plus" in TV Settings</h3>
+                            <p>Go to <strong>Settings ➔ General ➔ Smart Features ➔ Autorun Samsung TV Plus</strong> and turn it <strong>OFF</strong>. Also turn off "Terms & Privacy ➔ Interest-Based Advertisements".</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Guide Tab 4: Auto-Boot on TV Startup -->
+                <div class="guide-panel" id="guide-method4">
+                    <div class="guide-step">
+                        <span class="step-num">1</span>
+                        <div class="step-text">
+                            <h3>Bypass the Stock Samsung Smart Hub on Boot</h3>
+                            <p>Samsung Tizen has a built-in feature that can completely bypass the noisy default Smart Hub and boot directly into your last opened app or source!</p>
+                        </div>
+                    </div>
+                    <div class="guide-step">
+                        <span class="step-num">2</span>
+                        <div class="step-text">
+                            <h3>TV Settings Configuration</h3>
+                            <p>Go to TV: <strong>Settings ➔ General ➔ Smart Features</strong>:</p>
+                            <ul>
+                                <li>Set <strong>"Autorun Smart Hub"</strong> ➔ <strong>OFF</strong></li>
+                                <li>Set <strong>"Autorun Last App"</strong> ➔ <strong>ON</strong></li>
+                            </ul>
+                            <p>Now, whenever you turn your TV on with the power button, it will boot directly into Aero TV without showing the Samsung home screen or ads!</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <span class="modal-note">Use D-pad arrows to scroll • Press <kbd>ESC / Return</kbd> to exit</span>
+                <button class="btn btn-primary focusable" id="btn-guide-got-it" tabindex="-1">Got it, Thanks!</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL 2: SETTINGS & CUSTOMIZATION -->
+    <div id="settings-modal" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="settings-title" aria-hidden="true">
+        <div class="modal-card modal-settings">
+            <div class="modal-header">
+                <div class="modal-title-wrap">
+                    <span class="modal-badge">PREFERENCES</span>
+                    <h2 id="settings-title">Launcher Settings & Aesthetics</h2>
+                </div>
+                <button class="modal-close focusable" id="btn-close-settings" aria-label="Close" tabindex="-1">✕</button>
+            </div>
+
+            <div class="modal-body settings-grid">
+                <!-- Setting 1: Wallpaper -->
+                <div class="setting-item">
+                    <label class="setting-label">Active Wallpaper</label>
+                    <div class="setting-options" id="wallpaper-selector">
+                        <button class="opt-btn active focusable" data-wall="oled" tabindex="-1">OLED Aurora</button>
+                        <button class="opt-btn focusable" data-wall="nordic" tabindex="-1">Nordic Lake</button>
+                        <button class="opt-btn focusable" data-wall="mesh" tabindex="-1">Obsidian Mesh</button>
+                    </div>
+                </div>
+
+                <!-- Setting 2: UI Audio / Remote Clicks -->
+                <div class="setting-item">
+                    <label class="setting-label">TV Remote Audio Feedback</label>
+                    <div class="setting-options" id="audio-toggle-wrap">
+                        <button class="opt-btn active focusable" id="btn-sound-on" tabindex="-1">Sound On</button>
+                        <button class="opt-btn focusable" id="btn-sound-off" tabindex="-1">Muted</button>
+                    </div>
+                </div>
+
+                <!-- Setting 3: Weather City -->
+                <div class="setting-item">
+                    <label class="setting-label">Weather Location</label>
+                    <div class="setting-input-wrap">
+                        <input type="text" id="setting-city-input" class="tv-input focusable" value="New York" placeholder="City name..." tabindex="-1">
+                        <button class="btn btn-small focusable" id="btn-save-city" tabindex="-1">Update</button>
+                    </div>
+                </div>
+
+                <!-- Setting 4: Idle Screensaver Timer -->
+                <div class="setting-item">
+                    <label class="setting-label">Ambient Screensaver Idle Timeout</label>
+                    <div class="setting-options" id="timeout-selector">
+                        <button class="opt-btn focusable" data-timeout="1" tabindex="-1">1 Min</button>
+                        <button class="opt-btn active focusable" data-timeout="3" tabindex="-1">3 Mins</button>
+                        <button class="opt-btn focusable" data-timeout="5" tabindex="-1">5 Mins</button>
+                        <button class="opt-btn focusable" data-timeout="0" tabindex="-1">Disabled</button>
+                    </div>
+                </div>
+
+                <!-- Setting 5: Parental Controls & Startup PIN -->
+                <div class="setting-item">
+                    <label class="setting-label">Parental Security & Access Lock</label>
+                    <div class="setting-options" id="lock-startup-selector">
+                        <button class="opt-btn active focusable" id="btn-lock-startup-on" tabindex="-1">🔒 Require PIN on Startup</button>
+                        <button class="opt-btn focusable" id="btn-lock-startup-off" tabindex="-1">Unlock on Boot</button>
+                    </div>
+                    <div class="pin-change-row">
+                        <div class="pin-status-text">Master PIN: <strong id="lbl-current-pin">••••</strong> (Default: 0000)</div>
+                        <button class="btn btn-small focusable" id="btn-open-pin-change" tabindex="-1">Change PIN</button>
+                    </div>
+                </div>
+
+                <!-- Setting 6: App Management -->
+                <div class="setting-item">
+                    <label class="setting-label">Applications & Custom Launchers</label>
+                    <p class="setting-subtext">Add custom streaming links, hide built-in apps, or reorder home screen tiles:</p>
+                    <button class="btn btn-small focusable" id="btn-settings-manage-apps" tabindex="-1">
+                        ⚙️ Open App Manager
+                    </button>
+                </div>
+
+                <!-- Setting 7: App-Level Locks -->
+                <div class="setting-item">
+                    <label class="setting-label">Protect Specific Apps with PIN</label>
+                    <p class="setting-subtext">Selected apps require PIN even if TV is already unlocked:</p>
+                    <div class="app-lock-checkboxes" id="app-lock-options">
+                        <label class="lock-checkbox-label">
+                            <input type="checkbox" class="app-lock-chk" value="Web Browser" checked> Web Browser
+                        </label>
+                        <label class="lock-checkbox-label">
+                            <input type="checkbox" class="app-lock-chk" value="Netflix"> Netflix
+                        </label>
+                        <label class="lock-checkbox-label">
+                            <input type="checkbox" class="app-lock-chk" value="YouTube"> YouTube
+                        </label>
+                        <label class="lock-checkbox-label">
+                            <input type="checkbox" class="app-lock-chk" value="Prime Video"> Prime Video
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <span class="modal-note">Changes saved automatically</span>
+                <button class="btn btn-primary focusable" id="btn-settings-done" tabindex="-1">Close Settings</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL 3: INPUT SWITCH NOTIFICATION / SIMULATOR -->
+    <div id="input-toast" class="input-toast" aria-hidden="true">
+        <div class="toast-content">
+            <div class="toast-icon">📺</div>
+            <div class="toast-text">
+                <h4 id="toast-title">Switching to HDMI 1</h4>
+                <p id="toast-desc">Sending input command to Samsung TV...</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- SECURITY PIN / PARENTAL LOCK OVERLAY -->
+    <div id="tv-lock-screen" class="lock-screen-overlay" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="lock-title">
+        <div class="lock-card">
+            <div class="lock-icon-badge">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+            </div>
+            <h2 id="lock-title" class="lock-title">Security PIN Required</h2>
+            <p class="lock-subtitle" id="lock-subtitle">Enter 4-digit code to access TV</p>
+
+            <!-- PIN Dots -->
+            <div class="pin-dots-row" id="pin-dots-container">
+                <div class="pin-dot" id="pdot-0"></div>
+                <div class="pin-dot" id="pdot-1"></div>
+                <div class="pin-dot" id="pdot-2"></div>
+                <div class="pin-dot" id="pdot-3"></div>
+            </div>
+
+            <div class="pin-error-msg" id="pin-error-msg" aria-live="polite"></div>
+
+            <!-- Numeric TV Keypad -->
+            <div class="keypad-grid" role="group" aria-label="PIN Keypad">
+                <button class="key-btn focusable" data-key="1" tabindex="-1">1</button>
+                <button class="key-btn focusable" data-key="2" tabindex="-1">2</button>
+                <button class="key-btn focusable" data-key="3" tabindex="-1">3</button>
+                <button class="key-btn focusable" data-key="4" tabindex="-1">4</button>
+                <button class="key-btn focusable" data-key="5" tabindex="-1">5</button>
+                <button class="key-btn focusable" data-key="6" tabindex="-1">6</button>
+                <button class="key-btn focusable" data-key="7" tabindex="-1">7</button>
+                <button class="key-btn focusable" data-key="8" tabindex="-1">8</button>
+                <button class="key-btn focusable" data-key="9" tabindex="-1">9</button>
+                <button class="key-btn key-action focusable" data-key="clear" title="Clear All" tabindex="-1">C</button>
+                <button class="key-btn focusable" data-key="0" tabindex="-1">0</button>
+                <button class="key-btn key-action focusable" data-key="backspace" title="Backspace" tabindex="-1">⌫</button>
+            </div>
+
+            <div class="lock-footer-hint">
+                <span>Use Remote Number Keys <kbd>0-9</kbd> or D-Pad • Default PIN: <kbd>0000</kbd></span>
+            </div>
+        </div>
+    </div>
+
+    <!-- CHANGE PIN DIALOG -->
+    <div id="pin-change-modal" class="modal-overlay" role="dialog" aria-modal="true" aria-hidden="true">
+        <div class="modal-card modal-pin-change">
+            <div class="modal-header">
+                <div class="modal-title-wrap">
+                    <span class="modal-badge">SECURITY</span>
+                    <h2>Set Master Security PIN</h2>
+                </div>
+                <button class="modal-close focusable" id="btn-close-pin-change" aria-label="Close" tabindex="-1">✕</button>
+            </div>
+            <div class="modal-body">
+                <p class="pin-change-desc">Enter a new 4-digit numeric code to protect your TV and apps:</p>
+                <div class="setting-input-wrap">
+                    <input type="password" id="input-new-pin" maxlength="4" class="tv-input focusable" placeholder="Enter 4 digits (e.g. 1234)" tabindex="-1">
+                    <button class="btn btn-primary focusable" id="btn-save-pin" tabindex="-1">Save PIN</button>
+                </div>
+                <p id="pin-change-status" class="pin-status-alert"></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL 4: MANAGE & ADD APPLICATIONS -->
+    <div id="manage-apps-modal" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="manage-apps-title" aria-hidden="true">
+        <div class="modal-card modal-manage-apps">
+            <div class="modal-header">
+                <div class="modal-title-wrap">
+                    <span class="modal-badge">APPLICATIONS</span>
+                    <h2 id="manage-apps-title">Manage & Customize Apps</h2>
+                </div>
+                <button class="modal-close focusable" id="btn-close-manage-apps" aria-label="Close" tabindex="-1">✕</button>
+            </div>
+
+            <!-- Tabs: Organize, Presets, Custom -->
+            <div class="modal-tabs" id="manage-apps-tabs">
+                <button class="modal-tab active focusable" data-app-modal-tab="organize" tabindex="-1">
+                    📋 My Apps (<span id="apps-count-badge">8</span>)
+                </button>
+                <button class="modal-tab focusable" data-app-modal-tab="presets" tabindex="-1">
+                    ⚡ Quick Presets
+                </button>
+                <button class="modal-tab focusable" data-app-modal-tab="custom" tabindex="-1">
+                    ➕ Add Custom App
+                </button>
+            </div>
+
+            <!-- Tab 1: Organize Apps -->
+            <div class="app-panel active" id="app-panel-organize">
+                <div class="app-panel-header">
+                    <p class="panel-desc">Hide apps you don't want on your home screen, reorder tiles, or delete custom links.</p>
+                    <button class="btn btn-outline-danger focusable" id="btn-reset-apps" tabindex="-1" title="Restore factory default apps">
+                        ↺ Reset Defaults
+                    </button>
+                </div>
+                <div class="app-mgmt-list" id="app-mgmt-list">
+                    <!-- Dynamically rendered rows -->
+                </div>
+            </div>
+
+            <!-- Tab 2: Quick Presets -->
+            <div class="app-panel" id="app-panel-presets">
+                <p class="panel-desc">One-click install popular smart TV services and custom utilities:</p>
+                <div class="presets-grid" id="presets-grid">
+                    <!-- Dynamically rendered preset cards -->
+                </div>
+            </div>
+
+            <!-- Tab 3: Custom App Builder -->
+            <div class="app-panel" id="app-panel-custom">
+                <div class="custom-builder-layout">
+                    <div class="builder-form">
+                        <div class="form-group">
+                            <label class="form-label" for="custom-name-input">App Title <span class="required">*</span></label>
+                            <input type="text" id="custom-name-input" class="tv-input focusable" placeholder="e.g. Jellyseerr, Twitch, IPTV" tabindex="-1">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="custom-url-input">Launch URL / Address <span class="required">*</span></label>
+                            <input type="text" id="custom-url-input" class="tv-input focusable" placeholder="https://... or http://192.168.1.50:5055" tabindex="-1">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="custom-badge-input">Subtitle / Badge</label>
+                            <input type="text" id="custom-badge-input" class="tv-input focusable" placeholder="e.g. Media Requests, Self-Hosted" value="Custom Web App" tabindex="-1">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Accent Color Theme</label>
+                            <div class="theme-options" id="custom-theme-options">
+                                <button type="button" class="theme-chip active focusable" data-theme="nebula" tabindex="-1">Nebula Purple</button>
+                                <button type="button" class="theme-chip focusable" data-theme="cyber" tabindex="-1">Cyber Cyan</button>
+                                <button type="button" class="theme-chip focusable" data-theme="emerald" tabindex="-1">Emerald</button>
+                                <button type="button" class="theme-chip focusable" data-theme="sunset" tabindex="-1">Sunset Orange</button>
+                                <button type="button" class="theme-chip focusable" data-theme="ruby" tabindex="-1">Ruby Red</button>
+                                <button type="button" class="theme-chip focusable" data-theme="solar" tabindex="-1">Gold</button>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Tile Icon</label>
+                            <div class="theme-options" id="custom-icon-options">
+                                <button type="button" class="theme-chip active focusable" data-icon="play" tabindex="-1">▶ Video</button>
+                                <button type="button" class="theme-chip focusable" data-icon="library" tabindex="-1">▲ Media</button>
+                                <button type="button" class="theme-chip focusable" data-icon="music" tabindex="-1">♫ Music</button>
+                                <button type="button" class="theme-chip focusable" data-icon="gaming" tabindex="-1">🎮 Gaming</button>
+                                <button type="button" class="theme-chip focusable" data-icon="home" tabindex="-1">🏠 Home</button>
+                                <button type="button" class="theme-chip focusable" data-icon="browser" tabindex="-1">🌐 Web</button>
+                                <button type="button" class="theme-chip focusable" data-icon="initials" tabindex="-1">🔤 Initials</button>
+                            </div>
+                        </div>
+                        <div class="form-actions">
+                            <button type="button" class="btn btn-primary focusable" id="btn-save-custom-app" tabindex="-1">
+                                ➕ Add to Favorite Apps
+                            </button>
+                        </div>
+                    </div>
+                    <div class="builder-preview">
+                        <span class="preview-label">Live Home Screen Preview</span>
+                        <div class="card app-card preview-card" id="custom-app-preview">
+                            <div class="app-icon-tile nebula-gradient" id="preview-icon-tile">
+                                <svg viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                            </div>
+                            <span class="app-title" id="preview-title">My Custom App</span>
+                            <span class="app-badge-sub" id="preview-badge">Custom Web App</span>
+                        </div>
+                        <p class="preview-hint">Card will instantly appear in your Favorite Apps carousel.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <span class="modal-note">Changes are saved automatically to your TV profile</span>
+                <button class="btn btn-primary focusable" id="btn-manage-apps-done" tabindex="-1">Done</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- AUDIO FEEDBACK & SCRIPTS -->
+    <script src="js/audio.js"></script>
+    <script src="js/spatial-nav.js"></script>
+    <script src="js/tizen-adapter.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>
