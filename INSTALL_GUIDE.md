@@ -137,6 +137,32 @@ lcprd1.samsungcloudcdn.com
 
 ---
 
+## Managing, Adding & Customizing Apps
+
+You can customize your home screen app lineup directly from your TV using your remote:
+
+### 1. Opening the App Manager
+- Click the **"⚙️ Manage Apps"** button on the Favorite Applications section header.
+- Or navigate to the end of the apps carousel and click the **"+ Add Custom"** card.
+- Or open **Settings (Gear icon) ➔ Manage Installed Apps**.
+
+### 2. Organize & Hide Apps
+In the **"My Apps"** tab:
+- **Hide Apps:** Click **"👁️ Hide"** on any pre-installed service (e.g. Disney+, Prime Video) to remove it from the home carousel without uninstalling it.
+- **Reorder Carousel:** Use the **◀** and **▶** buttons to reposition apps left or right so your most-used services appear first.
+- **Delete Custom Apps:** Click **"🗑️ Delete"** to completely remove any custom links you previously created.
+
+### 3. Quick 1-Click Presets Catalog
+In the **"Quick Presets"** tab:
+- Browse popular streaming services and home media tools (Twitch, Crunchyroll, Apple TV+, Max, Hulu, RetroArch, Home Assistant).
+- Click **"➕ Add to Home"** to add an app directly to your home screen.
+
+### 4. Adding Custom Web Apps & Local Dashboards
+In the **"Add Custom App"** tab:
+- Enter any URL (e.g. your local Home Assistant `http://homeassistant.local:8123`, Jellyfin, or web app).
+- Customize the tile with an app title, subtitle badge, custom OLED color gradient, and icon.
+- Click **"+ Add to Home Screen"**. Changes are saved directly to local storage and sync with the Parental Lock controls automatically.
+
 ---
 
 ## Parental Controls & Security PIN System
@@ -192,6 +218,7 @@ Aero TV includes dedicated keycode listeners for Samsung TV remotes:
 ## Built-In Features in Aero TV
 
 - **Zero Advertisements**: Clean, distraction-free 10-foot UI.
+- **Interactive App Manager**: Reorder, show/hide, install 1-click presets (Twitch, Crunchyroll, Max, etc.), or add custom local dashboards on the fly.
 - **Parental Controls & Security PIN**: Lock the entire TV on startup and protect selected apps (Default PIN: `0000`).
 - **Direct HDMI Source Switcher**: Instant switching for PS5, Apple TV, Switch, and Soundbar (eARC).
 - **Personal Media Hub**: Direct shortcuts to Plex, Jellyfin, Emby, and DLNA servers.

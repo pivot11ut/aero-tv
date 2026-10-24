@@ -1,6 +1,6 @@
 {
   "name": "aero-tv",
-  "version": "1.0.0",
+  "version": "1.2.0",
   "description": "Clean, ad-free replacement smart TV launcher and dashboard for Samsung Smart TVs (Tizen OS)",
   "main": "index.html",
   "scripts": {
